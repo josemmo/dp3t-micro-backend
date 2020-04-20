@@ -4,6 +4,7 @@ namespace App\Model;
 class Exposee extends AbstractModel {
     private $key;
     private $onset;
+    private $uploadedAt;
 
     /**
      * Parse Base64-encoded key
@@ -39,12 +40,14 @@ class Exposee extends AbstractModel {
 
     /**
      * Class constructor
-     * @param string $key   Raw secret key (32 bytes long)
-     * @param string $onset Date in YYYY-MM-DD format
+     * @param string $key        Raw secret key (32 bytes long)
+     * @param string $onset      Date in YYYY-MM-DD format
+     * @param int    $uploadedAt Upload date (UNIX timestamp)
      */
-    public function __construct(string $key, string $onset) {
+    public function __construct(string $key, string $onset, int $uploadedAt) {
         $this->key = $key;
         $this->onset = $onset;
+        $this->uploadedAt = $uploadedAt;
     }
 
 
@@ -63,6 +66,15 @@ class Exposee extends AbstractModel {
      */
     public function getOnset(): string {
         return $this->onset;
+    }
+
+
+    /**
+     * Get uploaded at
+     * @return int Uploaded date (UNIX timestamp)
+     */
+    public function getUploadedAt(): int {
+        return $this->uploadedAt;
     }
 
 

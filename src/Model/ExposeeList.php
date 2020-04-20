@@ -5,6 +5,8 @@ use App\Utils\DB;
 
 class ExposeeList extends AbstractModel {
     private $exposees = [];
+    private $latestTime = -1;
+    private $latestDigest = null;
 
     /**
      * Create instance from onset
@@ -14,9 +16,9 @@ class ExposeeList extends AbstractModel {
     public static function fromOnset(string $onset): self {
         $instance = new self();
 
-        $results = DB::getAll('SELECT `key`, onset FROM exposees WHERE onset=?s', $onset);
+        $results = DB::getAll('SELECT `key`, onset, uploaded_at FROM exposees WHERE onset=?s', $onset);
         foreach ($results as $item) {
-            $instance->addExposee(new Exposee($item['key'], $item['onset']));
+            $instance->addExposee(new Exposee($item['key'], $item['onset'], strtotime($item['uploaded_at'])));
         }
 
         return $instance;
@@ -28,7 +30,11 @@ class ExposeeList extends AbstractModel {
      * @param Exposee $exposee Exposee instance
      */
     private function addExposee(Exposee $exposee) {
-        $this->exposees[$exposee->getDigest()] = $exposee;
+        $this->exposees[] = $exposee;
+        if ($exposee->getUploadedAt() > $this->latestTime) {
+            $this->latestTime = $exposee->getUploadedAt();
+            $this->latestDigest = $exposee->getDigest();
+        }
     }
 
 
@@ -37,7 +43,7 @@ class ExposeeList extends AbstractModel {
      * @return Exposee[] List of exposees
      */
     public function getExposees(): array {
-        return array_values($this->exposees);
+        return $this->exposees;
     }
 
 
@@ -45,8 +51,6 @@ class ExposeeList extends AbstractModel {
      * @inheritdoc
      */
     public function getDigest(): string {
-        $digests = array_keys($this->exposees);
-        sort($digests);
-        return hash('md5', implode('', $digests), true);
+        return hash('md4', $this->latestDigest ?? '', true);
     }
 }
