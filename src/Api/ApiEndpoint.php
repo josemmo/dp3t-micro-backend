@@ -117,6 +117,7 @@ class ApiEndpoint {
                 "onset" => $exposee->getOnset()
             ];
         }
+        header('Cache-Control: max-age=300');
         $this->serveJson(['exposed' => $exposed]);
     }
 
