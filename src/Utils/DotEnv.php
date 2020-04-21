@@ -6,6 +6,17 @@ namespace App\Utils;
  */
 class DotEnv {
     /**
+     * Get environment variable
+     * @param  string      $name Variable name
+     * @return string|null       Variable value or NULL if not defined
+     */
+    public static function get(string $name): ?string {
+        $value = $_ENV[$name] ?? getenv($name);
+        return ($value === false) ? null : $value;
+    }
+
+
+    /**
      * Load to $_ENV superglobal
      * @param string $path Path to ".env" file
      */
@@ -34,7 +45,7 @@ class DotEnv {
     public static function required(array $fields) {
         $missing = [];
         foreach ($fields as $field) {
-            if (!isset($_ENV[$field])) $missing[] = $field;
+            if (self::get($field) === null) $missing[] = $field;
         }
         if (!empty($missing)) {
             $missing = implode(', ', $missing);

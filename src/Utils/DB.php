@@ -1,6 +1,8 @@
 <?php
 namespace App\Utils;
 
+use App\Utils\DotEnv;
+
 class DB {
     const CHARSET = "utf8";
     private static $instance = null;
@@ -13,10 +15,10 @@ class DB {
 
         try {
             self::$instance = new \SafeMySQL([
-                "host" => $_ENV['DB_HOST'],
-                "user" => $_ENV['DB_USER'],
-                "pass" => $_ENV['DB_PASS'],
-                "db" => $_ENV['DB_NAME'],
+                "host" => DotEnv::get('DB_HOST'),
+                "user" => DotEnv::get('DB_USER'),
+                "pass" => DotEnv::get('DB_PASS'),
+                "db" => DotEnv::get('DB_NAME'),
                 "charset" => self::CHARSET
             ]);
         } catch (\Exception $e) {
