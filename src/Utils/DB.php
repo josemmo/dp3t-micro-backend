@@ -16,12 +16,14 @@ class DB {
         try {
             self::$instance = new \SafeMySQL([
                 "host" => DotEnv::get('DB_HOST'),
+                "port" => DotEnv::get('DB_PORT'),
                 "user" => DotEnv::get('DB_USER'),
                 "pass" => DotEnv::get('DB_PASS'),
                 "db" => DotEnv::get('DB_NAME'),
                 "charset" => self::CHARSET
             ]);
         } catch (\Exception $e) {
+            error_log($e);
             http_response_code(503);
             exit;
         }
