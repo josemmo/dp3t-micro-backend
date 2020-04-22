@@ -148,7 +148,7 @@ class ApiEndpoint {
      * @param string $digest Digest raw bytes
      */
     private function handleEtag(string $digest) {
-        $serverEtag = '"' . bin2hex($digest) . '"';
+        $serverEtag = 'W/"' . bin2hex($digest) . '"';
         header("Etag: $serverEtag");
 
         // Get client request ETag
