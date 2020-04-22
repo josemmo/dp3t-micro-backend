@@ -1,4 +1,5 @@
 <?php
+use App\Utils\DotEnv;
 use PHPUnit\Framework\TestCase;
 use GuzzleHttp\Client;
 
@@ -13,10 +14,8 @@ abstract class AbstractTest extends TestCase {
      */
     protected function getHttpClient(): Client {
         if (self::$httpClient === null) {
-            $baseUri = getenv('TEST_BASE_URI');
-            if (empty($baseUri)) $baseUri = self::DEFAULT_BASE_URI;
             self::$httpClient = new Client([
-                'base_uri' => $baseUri,
+                'base_uri' => DotEnv::get('TEST_BASE_URI') ?? self::DEFAULT_BASE_URI,
                 'http_errors' => false
             ]);
         }
