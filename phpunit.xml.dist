@@ -5,4 +5,10 @@
             <directory>tests</directory>
         </testsuite>
     </testsuites>
+    <php>
+        <env name="DB_HOST" value="" />
+        <env name="DB_NAME" value="" />
+        <env name="DB_USER" value="" />
+        <env name="DB_PASS" value="" />
+    </php>
 </phpunit>
