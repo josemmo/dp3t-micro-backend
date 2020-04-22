@@ -25,6 +25,6 @@ To upgrade the app, **do not remove the running containers** and just execute th
 
 ### Manual installation
 1. Define the `DB_HOST`, `DB_NAME`, `DB_USER` and `DB_PASS` environment variables to allow the app to connect to the database. *TIP: you can also create a root `.env` file instead to store these values*.
-2. Run `composer install` to download third-party dependencies
+2. Run `composer install --no-dev` to download third-party dependencies
 3. Run `php install.php` to setup the database
 4. Use nginx or other web server to redirect all requests to `public/index.php`
