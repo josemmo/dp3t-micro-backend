@@ -1,0 +1,14 @@
+language: php
+php:
+  - 7.4
+
+services:
+  - docker
+
+install:
+  - composer install
+  - docker-compose up -d --build
+  - sleep 10
+
+script:
+  - vendor/bin/phpunit tests

@@ -1,4 +1,6 @@
 # DP-3T μBackend
+[![CI Status](https://travis-ci.com/josemmo/dp3t-micro-backend.svg?branch=master)](https://travis-ci.com/josemmo/dp3t-micro-backend)
+[![License](https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg)](LICENSE)
 
 ## What is this?
 DP-3T Micro Backend (stylized as μBackend) is a lightweight, fast and simple implementation of the [DP-3T backend Web Service](https://github.com/DP-3T/dp3t-sdk-backend/blob/develop/documentation/documentation.pdf) specification.
