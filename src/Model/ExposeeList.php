@@ -6,7 +6,7 @@ use App\Utils\DB;
 class ExposeeList extends AbstractModel {
     private $exposees = [];
     private $latestTime = -1;
-    private $latestDigest = null;
+    private $latestDigests = null;
 
     /**
      * Create instance from onset
@@ -31,9 +31,13 @@ class ExposeeList extends AbstractModel {
      */
     private function addExposee(Exposee $exposee) {
         $this->exposees[] = $exposee;
-        if ($exposee->getUploadedAt() > $this->latestTime) {
-            $this->latestTime = $exposee->getUploadedAt();
-            $this->latestDigest = $exposee->getDigest();
+
+        $uploadedAt = $exposee->getUploadedAt();
+        if ($uploadedAt == $this->latestTime) {
+            $this->latestDigests[] = $exposee->getDigest();
+        } elseif ($uploadedAt > $this->latestTime) {
+            $this->latestTime = $uploadedAt;
+            $this->latestDigests = [$exposee->getDigest()];
         }
     }
 
@@ -51,6 +55,7 @@ class ExposeeList extends AbstractModel {
      * @inheritdoc
      */
     public function getDigest(): string {
-        return hash('md4', $this->latestDigest ?? '', true);
+        $payload = ($this->latestDigests === null) ? "" : implode('', $this->latestDigests);
+        return hash('md4', $payload, true);
     }
 }
