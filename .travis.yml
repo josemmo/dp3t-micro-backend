@@ -8,7 +8,7 @@ services:
 install:
   - composer install
   - docker-compose up -d --build
-  - sleep 10
+  - sleep 30
 
 script:
   - vendor/bin/phpunit tests
