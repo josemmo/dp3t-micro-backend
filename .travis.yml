@@ -11,4 +11,4 @@ install:
   - sleep 30
 
 script:
-  - vendor/bin/phpunit tests
+  - vendor/bin/phpunit
