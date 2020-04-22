@@ -5,7 +5,7 @@ require __DIR__ . "/vendor/autoload.php";
 
 // Define constants
 define('APP_NAME', 'Dp3tMicroBackend');
-define('APP_VERSION', '0.0.1-alpha');
+define('APP_VERSION', '0.0.2-alpha');
 
 // Load root ".env" file
 DotEnv::load(__DIR__ . '/.env');
