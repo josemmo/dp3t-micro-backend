@@ -4,7 +4,7 @@ use GuzzleHttp\Pool;
 use GuzzleHttp\Psr7\Response;
 
 class LoadTest extends AbstractTest {
-    const NUMBER_OF_KEYS = 10000;
+    const NUMBER_OF_KEYS = 5000;
 
     /**
      * Simulate upload of exposee keys
@@ -27,7 +27,7 @@ class LoadTest extends AbstractTest {
         // Send requests
         $successCount = 0;
         $pool = new Pool($client, $requests(self::NUMBER_OF_KEYS), [
-            'concurrency' => 300,
+            'concurrency' => 200,
             'fulfilled' => function(Response $response) use (&$successCount) {
                 if ($response->getStatusCode() == 200) {
                     $successCount++;
