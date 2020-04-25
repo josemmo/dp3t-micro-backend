@@ -26,7 +26,7 @@ class LoadTest extends AbstractTest {
         // Send requests
         $successCount = 0;
         $pool = new Pool($client, $requests(self::NUMBER_OF_KEYS), [
-            'concurrency' => 500,
+            'concurrency' => 300,
             'fulfilled' => function (Response $response) use (&$successCount) {
                 if ($response->getStatusCode() == 200) $successCount++;
             }
