@@ -1,4 +1,5 @@
 <?php
+use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Pool;
 use GuzzleHttp\Psr7\Response;
 
@@ -27,8 +28,15 @@ class LoadTest extends AbstractTest {
         $successCount = 0;
         $pool = new Pool($client, $requests(self::NUMBER_OF_KEYS), [
             'concurrency' => 300,
-            'fulfilled' => function (Response $response) use (&$successCount) {
-                if ($response->getStatusCode() == 200) $successCount++;
+            'fulfilled' => function(Response $response) use (&$successCount) {
+                if ($response->getStatusCode() == 200) {
+                    $successCount++;
+                } else {
+                    echo "\n[!] Load Test Error: " . $response->getBody();
+                }
+            },
+            'rejected' => function(RequestException $reason) {
+                echo "\n[!] Load Test Rejected: " . $reason->getMessage();
             }
         ]);
         $startTime = microtime(true);
