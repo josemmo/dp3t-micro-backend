@@ -11,14 +11,14 @@ class LoadTest extends AbstractTest {
      */
     public function testSimulateUploads() {
         $client = $this->getHttpClient();
-        $onset = date('Y-m-d');
+        $keyDate = date('Y-m-d');
 
         // Define requests generator
-        $requests = function ($total) use ($client, $onset) {
+        $requests = function ($total) use ($client, $keyDate) {
             for ($i=0; $i<$total; $i++) {
-                yield function() use ($client, $onset) {
+                yield function() use ($client, $keyDate) {
                     return $client->postAsync('/v1/exposed', [
-                        'json' => ['key' => $this->getRandomKey(), 'onset' => $onset]
+                        'json' => ['key' => $this->getRandomKey(), 'keyDate' => $keyDate]
                     ]);
                 };
             }
