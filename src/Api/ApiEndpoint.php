@@ -77,12 +77,12 @@ class ApiEndpoint {
             $this->serveError(400, 'Not a valid base64 key');
             return;
         }
-        if (!isset($body['onset'])) {
-            $this->serveError(400, 'Missing "onset" from request body');
+        if (!isset($body['keyDate'])) {
+            $this->serveError(400, 'Missing "keyDate" from request body');
             return;
         }
-        if (!Exposee::isValidOnset($body['onset'])) {
-            $this->serveError(400, 'Not a valid onset date');
+        if (!Exposee::isValidKeyDate($body['keyDate'])) {
+            $this->serveError(400, 'Not a valid key date');
             return;
         }
 
@@ -100,11 +100,12 @@ class ApiEndpoint {
 
     /**
      * GET exposed
+     * @param string $date Key date in YYYY-MM-DD format
      */
     private function getExposed(string $date) {
         $this->enforceRequestMethod('GET');
 
-        $list = ExposeeList::fromOnset($date);
+        $list = ExposeeList::fromKeyDate($date);
 
         // Check whether client has the latest data already
         $this->handleEtag($list->getDigest());
@@ -114,7 +115,7 @@ class ApiEndpoint {
         foreach ($list->getExposees() as $exposee) {
             $exposed[] = [
                 "key" => base64_encode($exposee->getKey()),
-                "onset" => $exposee->getOnset()
+                "keyDate" => $exposee->getKeyDate()
             ];
         }
         header('Cache-Control: max-age=300');

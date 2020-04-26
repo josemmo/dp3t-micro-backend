@@ -9,16 +9,16 @@ class ExposeeList extends AbstractModel {
     private $latestDigests = null;
 
     /**
-     * Create instance from onset
-     * @param  string $onset Date in YYYY-MM-DD format
-     * @return self          Instance
+     * Create instance from key date
+     * @param  string $keyDate Key date in YYYY-MM-DD format
+     * @return self            Instance
      */
-    public static function fromOnset(string $onset): self {
+    public static function fromKeyDate(string $keyDate): self {
         $instance = new self();
 
-        $results = DB::getAll('SELECT `key`, onset, uploaded_at FROM exposees WHERE onset=?s', $onset);
+        $results = DB::getAll('SELECT `key`, key_date, uploaded_at FROM exposees WHERE key_date=?s', $keyDate);
         foreach ($results as $item) {
-            $instance->addExposee(new Exposee($item['key'], $item['onset'], strtotime($item['uploaded_at'])));
+            $instance->addExposee(new Exposee($item['key'], $item['key_date'], strtotime($item['uploaded_at'])));
         }
 
         return $instance;
