@@ -90,8 +90,8 @@ class ApiEndpoint {
         // Waiting for DP-3T to publish specification
 
         // Persist exposee in database
-        DB::query('INSERT IGNORE INTO exposees (`key`, `onset`, uploaded_at) VALUES (x?s, ?s, NOW())',
-            bin2hex($secretKey), $body['onset']);
+        DB::query('INSERT IGNORE INTO exposees (`key`, `onset`, received_at) VALUES (x?s, ?s, ?s)',
+            bin2hex($secretKey), $body['onset'], date('Y-m-d H:i:s'));
 
         // Send response
         $this->serveJson(['success' => true]);

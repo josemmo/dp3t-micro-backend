@@ -16,9 +16,9 @@ class ExposeeList extends AbstractModel {
     public static function fromKeyDate(string $keyDate): self {
         $instance = new self();
 
-        $results = DB::getAll('SELECT `key`, key_date, uploaded_at FROM exposees WHERE key_date=?s', $keyDate);
+        $results = DB::getAll('SELECT `key`, key_date, received_at FROM exposees WHERE key_date=?s', $keyDate);
         foreach ($results as $item) {
-            $instance->addExposee(new Exposee($item['key'], $item['key_date'], strtotime($item['uploaded_at'])));
+            $instance->addExposee(new Exposee($item['key'], $item['key_date'], strtotime($item['received_at'])));
         }
 
         return $instance;
@@ -32,11 +32,11 @@ class ExposeeList extends AbstractModel {
     private function addExposee(Exposee $exposee) {
         $this->exposees[] = $exposee;
 
-        $uploadedAt = $exposee->getUploadedAt();
-        if ($uploadedAt == $this->latestTime) {
+        $receivedAt = $exposee->getReceivedAt();
+        if ($receivedAt == $this->latestTime) {
             $this->latestDigests[] = $exposee->getDigest();
-        } elseif ($uploadedAt > $this->latestTime) {
-            $this->latestTime = $uploadedAt;
+        } elseif ($receivedAt > $this->latestTime) {
+            $this->latestTime = $receivedAt;
             $this->latestDigests = [$exposee->getDigest()];
         }
     }

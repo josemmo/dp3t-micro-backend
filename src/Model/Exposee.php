@@ -4,7 +4,7 @@ namespace App\Model;
 class Exposee extends AbstractModel {
     private $key;
     private $keyDate;
-    private $uploadedAt;
+    private $receivedAt;
 
     /**
      * Parse Base64-encoded key
@@ -42,12 +42,12 @@ class Exposee extends AbstractModel {
      * Class constructor
      * @param string $key        Raw secret key (32 bytes long)
      * @param string $keyDate    Key date in YYYY-MM-DD format
-     * @param int    $uploadedAt Upload date as UNIX timestamp
+     * @param int    $receivedAt Date of receipt as UNIX timestamp
      */
-    public function __construct(string $key, string $keyDate, int $uploadedAt) {
+    public function __construct(string $key, string $keyDate, int $receivedAt) {
         $this->key = $key;
         $this->keyDate = $keyDate;
-        $this->uploadedAt = $uploadedAt;
+        $this->receivedAt = $receivedAt;
     }
 
 
@@ -70,11 +70,11 @@ class Exposee extends AbstractModel {
 
 
     /**
-     * Get uploaded at
-     * @return int Uploaded date as UNIX timestamp
+     * Get received at
+     * @return int Date of receipt as UNIX timestamp
      */
-    public function getUploadedAt(): int {
-        return $this->uploadedAt;
+    public function getReceivedAt(): int {
+        return $this->receivedAt;
     }
 
 

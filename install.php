@@ -14,10 +14,10 @@ DB::query(
     'CREATE TABLE IF NOT EXISTS exposees (
         `key` binary(32) NOT NULL,
         `key_date` date NOT NULL,
-        `uploaded_at` datetime NOT NULL,
+        `received_at` datetime NOT NULL,
         PRIMARY KEY (`key`),
         KEY `key_date` (`key_date`),
-        KEY `upload_date` (`uploaded_at`)
+        KEY `received_at` (`received_at`)
      ) ENGINE=?p DEFAULT CHARSET=utf8',
     $supportsAria ? 'Aria' : 'InnoDB'
 );
