@@ -3,8 +3,8 @@ namespace App\Model;
 
 class Exposee extends AbstractModel {
     private $key;
-    private $onset;
-    private $uploadedAt;
+    private $keyDate;
+    private $receivedAt;
 
     /**
      * Parse Base64-encoded key
@@ -19,18 +19,18 @@ class Exposee extends AbstractModel {
 
 
     /**
-     * Is valid onset
-     * @param  string  $onset Date in YYYY-MM-DD format
-     * @return boolean        Is valid date
+     * Is valid key date
+     * @param  string  $keyDate Key date in YYYY-MM-DD format
+     * @return boolean          Is valid date
      */
-    public static function isValidOnset(string $onset): bool {
+    public static function isValidKeyDate(string $keyDate): bool {
         // Looks like a date?
-        if (!preg_match('/[0-9\-]{10}/', $onset)) return false;
+        if (!preg_match('/[0-9\-]{10}/', $keyDate)) return false;
 
         // Is date in between allowed range?
         $maxDate = strtotime('today +1 day');
         $minDate = strtotime('today -30 days');
-        $time = strtotime($onset);
+        $time = strtotime($keyDate);
         if (($time < $minDate) || ($time > $maxDate)) return false;
 
         // Looks good
@@ -41,13 +41,13 @@ class Exposee extends AbstractModel {
     /**
      * Class constructor
      * @param string $key        Raw secret key (32 bytes long)
-     * @param string $onset      Date in YYYY-MM-DD format
-     * @param int    $uploadedAt Upload date (UNIX timestamp)
+     * @param string $keyDate    Key date in YYYY-MM-DD format
+     * @param int    $receivedAt Date of receipt as UNIX timestamp
      */
-    public function __construct(string $key, string $onset, int $uploadedAt) {
+    public function __construct(string $key, string $keyDate, int $receivedAt) {
         $this->key = $key;
-        $this->onset = $onset;
-        $this->uploadedAt = $uploadedAt;
+        $this->keyDate = $keyDate;
+        $this->receivedAt = $receivedAt;
     }
 
 
@@ -61,20 +61,20 @@ class Exposee extends AbstractModel {
 
 
     /**
-     * Get onset date
-     * @return string Date in YYYY-MM-DD format
+     * Get key date
+     * @return string Key date in YYYY-MM-DD format
      */
-    public function getOnset(): string {
-        return $this->onset;
+    public function getKeyDate(): string {
+        return $this->keyDate;
     }
 
 
     /**
-     * Get uploaded at
-     * @return int Uploaded date (UNIX timestamp)
+     * Get received at
+     * @return int Date of receipt as UNIX timestamp
      */
-    public function getUploadedAt(): int {
-        return $this->uploadedAt;
+    public function getReceivedAt(): int {
+        return $this->receivedAt;
     }
 
 

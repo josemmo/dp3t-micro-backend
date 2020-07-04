@@ -3,6 +3,9 @@ use App\Utils\DotEnv;
 
 require __DIR__ . "/vendor/autoload.php";
 
+// Configure environment
+date_default_timezone_set('UTC');
+
 // Define constants
 define('APP_NAME', 'Dp3tMicroBackend');
 define('APP_VERSION', '0.0.2-alpha');

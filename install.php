@@ -13,11 +13,11 @@ echo "[i] Creating 'exposees' table...\n";
 DB::query(
     'CREATE TABLE IF NOT EXISTS exposees (
         `key` binary(32) NOT NULL,
-        `onset` date NOT NULL,
-        `uploaded_at` datetime NOT NULL,
+        `key_date` date NOT NULL,
+        `received_at` datetime NOT NULL,
         PRIMARY KEY (`key`),
-        KEY `onset` (`onset`),
-        KEY `upload_date` (`uploaded_at`)
+        KEY `key_date` (`key_date`),
+        KEY `received_at` (`received_at`)
      ) ENGINE=?p DEFAULT CHARSET=utf8',
     $supportsAria ? 'Aria' : 'InnoDB'
 );

@@ -5,31 +5,31 @@ class ExposedTest extends AbstractTest {
      */
     public function testExposees() {
         $client = $this->getHttpClient();
-        $onset = date('Y-m-d');
+        $keyDate = date('Y-m-d');
         $keys = [];
         for ($i=0; $i<10; $i++) {
             $keys[] = $this->getRandomKey();
         }
 
         // Check invalid request method
-        $this->assertEquals(405, $client->request('GET', '/v1/exposed')->getStatusCode());
+        $this->assertEquals(405, $client->get('/v1/exposed')->getStatusCode());
 
         // Upload exposees
         foreach ($keys as $i=>$key) {
-            $payload = ['key' => $key, 'onset' => $onset];
+            $payload = ['key' => $key, 'keyDate' => $keyDate];
             $type = ($i%2 == 0) ? "json" : "form_params";
-            $this->assertEquals(200, $client->request('POST', '/v1/exposed', [$type => $payload])->getStatusCode());
+            $this->assertEquals(200, $client->post('/v1/exposed', [$type => $payload])->getStatusCode());
         }
 
         // Upload some duplicate exposees (should be ignored)
-        $dupeOffset = date('Y-m-d', strtotime('-2 days'));
+        $dupeKeyDate = date('Y-m-d', strtotime('-2 days'));
         foreach (array_slice($keys, 0, 3) as $key) {
-            $payload = ['key' => $key, 'onset' => $dupeOffset];
-            $this->assertEquals(200, $client->request('POST', '/v1/exposed', ['json' => $payload])->getStatusCode());
+            $payload = ['key' => $key, 'keyDate' => $dupeKeyDate];
+            $this->assertEquals(200, $client->post('/v1/exposed', ['json' => $payload])->getStatusCode());
         }
 
         // List exposees
-        $list = $client->request('GET', "/v1/exposed/$onset");
+        $list = $client->get("/v1/exposed/$keyDate");
         $this->assertEquals(200, $list->getStatusCode());
         $res = json_decode($list->getBody(), true);
         if (!isset($res['exposed'])) $this->fail('Missing "exposed" field from response body');
@@ -37,7 +37,7 @@ class ExposedTest extends AbstractTest {
         // Check existence of all uploaded keys
         $wsKeys = [];
         foreach ($res['exposed'] as $item) {
-            $this->assertEquals($onset, $item['onset']);
+            $this->assertEquals($keyDate, $item['keyDate']);
             $wsKeys[] = $item['key'];
         }
         $this->assertEmpty(array_diff($keys, $wsKeys), 'Missing some uploaded exposees from response');
@@ -50,19 +50,19 @@ class ExposedTest extends AbstractTest {
     public function testMalformedExposees() {
         $client = $this->getHttpClient();
         $payloads = [
-            ['key' => 'not_a_valid_key', 'onset' => date('Y-m-d')],
-            ['key' => str_repeat('x', 44), 'onset' => date('Y-m-d')],
-            ['key' => base64_encode(random_bytes(10)), 'onset' => date('Y-m-d')],
-            ['key' => base64_encode(random_bytes(50)), 'onset' => date('Y-m-d')],
-            ['key' => base64_encode(random_bytes(50)), 'onset' => date('Y-m-d')],
-            ['key' => $this->getRandomKey(), 'onset' => 'not_a_valid_date'],
-            ['key' => $this->getRandomKey(), 'onset' => '2020-01-01'],
-            ['key' => $this->getRandomKey(), 'onset' => '2099-01-01'],
-            ['key' => $this->getRandomKey(), 'onset' => '2020-12-34'],
-            ['key' => $this->getRandomKey(), 'onset' => '0123456789']
+            ['key' => 'not_a_valid_key', 'keyDate' => date('Y-m-d')],
+            ['key' => str_repeat('x', 44), 'keyDate' => date('Y-m-d')],
+            ['key' => base64_encode(random_bytes(10)), 'keyDate' => date('Y-m-d')],
+            ['key' => base64_encode(random_bytes(50)), 'keyDate' => date('Y-m-d')],
+            ['key' => base64_encode(random_bytes(50)), 'keyDate' => date('Y-m-d')],
+            ['key' => $this->getRandomKey(), 'keyDate' => 'not_a_valid_date'],
+            ['key' => $this->getRandomKey(), 'keyDate' => '2020-01-01'],
+            ['key' => $this->getRandomKey(), 'keyDate' => '2099-01-01'],
+            ['key' => $this->getRandomKey(), 'keyDate' => '2020-12-34'],
+            ['key' => $this->getRandomKey(), 'keyDate' => '0123456789']
         ];
         foreach ($payloads as $payload) {
-            $this->assertEquals(400, $client->request('POST', '/v1/exposed', ['json' => $payload])->getStatusCode());
+            $this->assertEquals(400, $client->post('/v1/exposed', ['json' => $payload])->getStatusCode());
         }
     }
 
@@ -72,12 +72,12 @@ class ExposedTest extends AbstractTest {
      */
     public function testCache() {
         $client = $this->getHttpClient();
-        $onset = date('Y-m-d');
+        $keyDate = date('Y-m-d');
 
         // Get initial ETag
         $etags = [];
         for ($i=0; $i<3; $i++) {
-            $response = $client->request('GET', "/v1/exposed/$onset");
+            $response = $client->get("/v1/exposed/$keyDate");
             if (!$response->hasHeader('Cache-Control')) $this->fail('Missing "Cache-Control" header from response');
             $etags[] = $response->getHeader('Etag')[0];
         }
@@ -86,15 +86,15 @@ class ExposedTest extends AbstractTest {
         // Test If-None-Match
         $etag = reset($etags);
         $this->assertEquals(304,
-            $client->request('GET', "/v1/exposed/$onset", ['headers' => ['If-None-Match' => $etag]])->getStatusCode());
+            $client->get("/v1/exposed/$keyDate", ['headers' => ['If-None-Match' => $etag]])->getStatusCode());
         $this->assertEquals(200,
-            $client->request('GET', "/v1/exposed/$onset", ['headers' => ['If-None-Match' => '"a"']])->getStatusCode());
+            $client->get("/v1/exposed/$keyDate", ['headers' => ['If-None-Match' => '"a"']])->getStatusCode());
 
         // Force cache change
-        $client->request('POST', '/v1/exposed', [
-            'json' => ['key' => $this->getRandomKey(), 'onset' => $onset]
+        $client->post('/v1/exposed', [
+            'json' => ['key' => $this->getRandomKey(), 'keyDate' => $keyDate]
         ]);
-        $response = $client->request('GET', "/v1/exposed/$onset", ['headers' => ['If-None-Match' => $etag]]);
+        $response = $client->get("/v1/exposed/$keyDate", ['headers' => ['If-None-Match' => $etag]]);
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertNotEquals($etag, $response->getHeader('Etag')[0]);
     }

@@ -3,6 +3,9 @@
 [![License](https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg)](LICENSE)
 [![Open Demo Backend](https://img.shields.io/badge/open-demo%20server-blue)](https://dp3t.josemmo.io/)
 
+| :warning: THIS PROJECT IS UNMAINTAINED: Use the [DP3T SDK Backend](https://github.com/DP-3T/dp3t-sdk-backend) instead :warning: |
+| --- |
+
 ## What is this?
 DP-3T Micro Backend (stylized as μBackend) is a lightweight, fast and simple implementation of the [DP-3T backend Web Service](https://github.com/DP-3T/dp3t-sdk-backend/blob/develop/documentation/documentation.pdf) specification.
 It has been designed to run on almost any server, regardless of its computational capabilities.
